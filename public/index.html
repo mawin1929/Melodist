@@ -13,7 +13,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <script type="text/javascript" src="js/page.js"></script>
-    <script type="text/javascript" src="../node_modules/createjs-browserify/lib/createjs-2016.11.12.combined.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://code.createjs.com/soundjs-0.6.2.min.js"></script>
     <script type="text/javascript" src="libs/materialize/bin/materialize.js"></script>
@@ -26,8 +25,9 @@
     <script src="js/controllers/MainCtrl.js"></script>
     <script src="js/appRoutes.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/page.js"></script>
 </head>
-<body ng-app="sampleApp" ng-controller="MainController">
+<body ng-app="sampleApp" ng-controller="MainController" onload="loadSound();">
 <div class="container">
     <!-- ANGULAR DYNAMIC CONTENT -->
     <div ng-view></div>
