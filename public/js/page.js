@@ -9,4 +9,7 @@ function playSound () {
     createjs.Sound.play(soundID);
 }
 
-    
+function playAudioSynth() {
+    var piano = Synth.createInstrument('piano');
+    piano.play('C', 4, 2);
+}
