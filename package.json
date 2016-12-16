@@ -5,7 +5,6 @@
       "express": "~4.5.1",
       "mongoose": "4.7.2",
       "body-parser": "~1.4.2",
-      "method-override" : "~2.0.2",
-      "createjs-browserify": "latest"
+      "method-override" : "~2.0.2"
     }
 }
