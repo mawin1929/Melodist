@@ -8,6 +8,12 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
     //     duration: 2
     // };
 
+    $scope.tones = [
+        { id: "A", name: 'A' },
+        { id: "B", name: 'B' },
+        { id: "C", name: 'C' }
+    ];
+
     $scope.piano = Synth.createInstrument('piano');
     $scope.playlist = [
         {note: "C", octave: 5, duration: 2},
@@ -29,8 +35,6 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
         }
     };
 
-
-
     $scope.playNote = function (i) {
         $scope.piano.play(i.note, i.octave, i.duration);
     };
@@ -47,6 +51,7 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
         }
     };
 
-
+    // Materialize
+    $('select').material_select();
 
 });

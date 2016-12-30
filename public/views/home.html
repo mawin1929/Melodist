@@ -1,11 +1,19 @@
 <div>
+    <p class="flow-text">Welcome to.... MELODIST</p>
 
-    <button onclick="playSound();" class="playSound">Play Sound</button>
-    <button onclick="playAudioSynth()"; class="audiosynth">Play AudioSynth</button>
-    <p class="flow-text">Test</p>
-
-    <button ng-click="play()"> Create MUSIC</button>
-    <button ng-click="randomize()"> Randomize!</button>
+    <button class="waves-effect waves-light btn" ng-click="play()">Play</button>
+    <button class="waves-effect waves-light btn" ng-click="randomize()">Randomize</button>
     <!--<p>{{ tagline }}</p>-->
+
+    <br />
+    <br />
+
+    <div class="input-field col s12">
+        <select>
+            <option value="" disabled selected>Select a Key</option>
+            <option ng-repeat="tone in tones" value="{{tone.key}}">{{tone.value}}</option>
+        </select>
+        <label>Key</label>
+    </div>
 
 </div>

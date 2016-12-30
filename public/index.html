@@ -16,10 +16,9 @@
     <link type = "text/css" rel ="stylesheet" href="css/stylesheet.css"/>
     
     <!-- JS -->
-    <script type="text/javascript" src="js/page.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="libs/materialize/bin/materialize.js"></script>
     <script src="https://code.createjs.com/soundjs-0.6.2.min.js"></script>
-   
 
     <!-- ANGULAR -->
     <script src="libs/angular/angular.min.js"></script>
@@ -29,13 +28,13 @@
     <script src="js/controllers/MainCtrl.js"></script>
     <script src="js/appRoutes.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/page.js"></script>
     <script src="js/audiosynth.js"></script>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
-<body ng-app="sampleApp" ng-controller="MainController" onload="loadSound();">
+<body ng-app="sampleApp" ng-controller="MainController">
 <div class="container">
+
     <!-- ANGULAR DYNAMIC CONTENT -->
     <div ng-view></div>
 </div>
