@@ -12,4 +12,5 @@ function playSound () {
 function playAudioSynth() {
     var piano = Synth.createInstrument('piano');
     piano.play('C', 4, 2);
+    piano.play('E',5,20);
 }
