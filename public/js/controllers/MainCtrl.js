@@ -10,14 +10,14 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
 
     $scope.piano = Synth.createInstrument('piano');
     $scope.playlist = [
-        {note: "C", octave: 5, duration: 2},
-        {note: "D", octave: 5, duration: 2},
-        {note: "E", octave: 5, duration: 2},
-        {note: "F", octave: 5, duration: 2},
-        {note: "G", octave: 5, duration: 2},
-        {note: "A", octave: 5, duration: 2},
-        {note: "B", octave: 5, duration: 2},
-        {note: "C", octave: 6, duration: 2}
+        {note: "C", octave: 4, duration: 2},
+        {note: "D", octave: 4, duration: 2},
+        {note: "E", octave: 4, duration: 2},
+        {note: "F", octave: 4, duration: 2},
+        {note: "G", octave: 4, duration: 2},
+        {note: "A", octave: 4, duration: 2},
+        {note: "B", octave: 4, duration: 2},
+        {note: "C", octave: 5, duration: 2}
     ];
 
     $scope.randomize = function () {
