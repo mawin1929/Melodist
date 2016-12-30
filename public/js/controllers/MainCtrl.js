@@ -8,12 +8,6 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
     //     duration: 2
     // };
 
-    $scope.tones = [
-        { id: "A", name: 'A' },
-        { id: "B", name: 'B' },
-        { id: "C", name: 'C' }
-    ];
-
     $scope.piano = Synth.createInstrument('piano');
     $scope.playlist = [
         {note: "C", octave: 5, duration: 2},
@@ -26,7 +20,7 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
         {note: "C", octave: 6, duration: 2}
     ];
 
-    $scope.randomize = function() {
+    $scope.randomize = function () {
         $scope.randomPlaylist = [];
         for (var count = 0; count < 7; count++) {
             var randomize = $scope.playlist[Math.floor($scope.playlist.length * Math.random())];
@@ -43,7 +37,7 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
     $scope.play = function () {
         var totalDelay = 0, i = 0;
         for (var key in $scope.randomPlaylist) {
-            setTimeout(function() {
+            setTimeout(function () {
                 $scope.playNote($scope.randomPlaylist[i]);
                 i++;
             }, totalDelay);
@@ -51,7 +45,11 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
         }
     };
 
-    // Materialize
-    $('select').material_select();
+
+    $scope.tones = [
+        "A", "B", "C"
+    ];
+    $scope.selectedKey = $scope.tones[0];
+
 
 });
