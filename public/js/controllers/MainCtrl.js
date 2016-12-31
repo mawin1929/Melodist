@@ -1,12 +1,5 @@
 // public/js/controllers/MainCtrl.js
-angular.module('MainCtrl', []).controller('MainController', function ($scope) {
-
-    // $scope.note =
-    // {
-    //     note: 'C',
-    //     octave: 5,
-    //     duration: 2
-    // };
+angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController', function ($scope) {
 
     $scope.piano = Synth.createInstrument('piano');
     $scope.playlist = [
@@ -47,9 +40,16 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
 
 
     $scope.tones = [
-        "A", "B", "C"
+        "A", "A♯/B♭", "B", "C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭"
     ];
-    $scope.selectedKey = $scope.tones[0];
 
+    $scope.selectedKey = undefined;
 
+    $scope.getSelectedKey = function() {
+        if ($scope.selectedKey !== undefined) {
+            return $scope.selectedKey;
+        } else {
+            return "Select a Key"
+        }
+    };
 });
