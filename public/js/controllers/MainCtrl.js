@@ -142,6 +142,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
     return {
         link: function ($scope, element, attr) {
             $timeout(function () {
+
                 //Vexflow (clef visualization)
                 var div = document.getElementById("clef");
                 $scope.renderer = new $scope.VF.Renderer(div, $scope.VF.Renderer.Backends.SVG);
@@ -155,6 +156,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
                 // Connect it to the rendering context and draw!
                 $scope.stave.setContext($scope.context).draw();
                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+
+                $('select').material_select();
             });
         }
     }

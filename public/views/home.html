@@ -1,6 +1,7 @@
 <div>
     <h1>Melodist</h1>
 
+    <!--
     <div class="input-field col s12">
         <p class="flow-text">Select a Key</p>
         <md-input-container>
@@ -9,6 +10,17 @@
                 <md-option ng-repeat="tone in tones" value="{{tone.note}}">{{ tone.noteText }}</md-option>
             </md-select>
         </md-input-container>
+    </div>
+    -->
+
+    <br />
+
+    <div class="input-field col s12">
+        <select ng-model="selectedKey">
+            <option value="" disabled selected>Select a Key</option>
+            <option ng-repeat="tone in tones" value="{{ tone.note }}">{{ tone.noteText }}</option>
+        </select>
+        <label>Key</label>
     </div>
 
     <br/>
