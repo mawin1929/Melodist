@@ -34,20 +34,26 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
     ];
 
     $scope.drawNotes = function () {
-        $scope.tagline = "Hi Tim";
         $scope.context.clear();
+        $scope.context = renderer.getContext();
+        $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
+        // Create a stave of width 400 at position 10, 40 on the canvas.
+        $scope.stave = new VF.Stave(10, 40, 800);
+        // Add a clef and time signature.
+        $scope.stave.addClef("treble").addTimeSignature("4/4");
+        // Connect it to the rendering context and draw!
+        $scope.stave.setContext($scope.context).draw();
         $scope.notesArray = [
-            // new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[0]/"4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["a/4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["f/4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "q"}),
-            new VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
-        ];
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[0]+"/4"], duration: "q"}),
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[1]+"/4"], duration: "q"}),
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[2]+"/4"], duration: "q"}),
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[3]+"/4"], duration: "q"}),
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[4]+"/4"], duration: "q"}),
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[5]+"/4"], duration: "q"}),
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[6]+"/4"], duration: "q"}),
+            new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[7]+"/4"], duration: "q"})
 
+        ];
         VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
     };
 
@@ -55,15 +61,15 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
         if ($scope.selectedKey !== undefined) {
             $scope.randomPlaylist = [];
             var filteredKeyboard = $scope.filterKeyboard();
-            for (var count = 0; count < 7; count++) {
+            $scope.lowerCaseNotes = [];
+            for (var count = 0; count < 8; count++) {
                 var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
                 $scope.randomPlaylist.push(randomize);
-                var temp = $scope.randomPlaylist[0].note.toLowerCase();
-                $scope.lowerCaseNotes = [];
+                var temp = $scope.randomPlaylist[count].note.toLowerCase();
                 $scope.lowerCaseNotes.push(temp);
-                console.log($scope.lowerCaseNotes[0]);
-                $scope.drawNotes();
+
             }
+            $scope.drawNotes();
         } else {
             Materialize.toast('Please select a key', 2000)
         }
@@ -109,22 +115,19 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
     };
 
     //Vexflow (clef visualization)
+        var div = document.getElementById("clef");
+        var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+        renderer.resize(900, 200); //size
+        $scope.context = renderer.getContext();
+        $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
+        // Create a stave of width 400 at position 10, 40 on the canvas.
+        $scope.stave = new VF.Stave(10, 40, 800);
+        // Add a clef and time signature.
+        $scope.stave.addClef("treble").addTimeSignature("4/4");
+        // Connect it to the rendering context and draw!
+        $scope.stave.setContext($scope.context).draw();
 
-    var div = document.getElementById("clef");
-    var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
-    renderer.resize(900, 200); //size
-    $scope.context = renderer.getContext();
-    $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
-    // Create a stave of width 400 at position 10, 40 on the canvas.
-    $scope.stave = new VF.Stave(10, 40, 800);
-    // Add a clef and time signature.
-    $scope.stave.addClef("treble").addTimeSignature("4/4");
-    // Connect it to the rendering context and draw!
-    $scope.stave.setContext($scope.context).draw();
-
-    //Adding notes
-
-    VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+        VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
 
     $scope.tones = [
         {note: "A", noteText: "A"},
