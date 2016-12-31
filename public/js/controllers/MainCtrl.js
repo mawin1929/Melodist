@@ -1,25 +1,10 @@
 // public/js/controllers/MainCtrl.js
-angular.module('MainCtrl', []).controller('MainController', function ($scope) {
-
+angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController', function ($scope) {
     $scope.tagline = "To the moon and back!";
     VF = Vex.Flow;
 
-
-    // $scope.note =
-    // {
-    //     note: 'C',
-    //     octave: 5,
-    //     duration: 2
-    // };
-
-    $scope.tones = [
-        {id: "A", name: 'A'},
-        {id: "B", name: 'B'},
-        {id: "C", name: 'C'}
-    ];
-
     $scope.piano = Synth.createInstrument('piano');
-    $scope.playlist = [
+    $scope.keyboard = [
         {note: "C", octave: 4, duration: 2},
         {note: "D", octave: 4, duration: 2},
         {note: "E", octave: 4, duration: 2},
@@ -42,21 +27,6 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
         new VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
     ];
 
-    $scope.randomize = function () {
-        $scope.randomPlaylist = [];
-        for (var count = 0; count < 7; count++) {
-            var randomize = $scope.playlist[Math.floor($scope.playlist.length * Math.random())];
-            // console.log(randomize);
-            $scope.randomPlaylist.push(randomize);
-            var temp = $scope.randomPlaylist[0].note.toLowerCase();
-            $scope.lowerCaseNotes = [];
-            $scope.lowerCaseNotes.push(temp);
-            console.log($scope.lowerCaseNotes[0]);
-            $scope.drawNotes();
-
-        }
-    };
-
     $scope.drawNotes = function () {
         $scope.tagline = "Hi Tim";
         $scope.context.clear();
@@ -73,7 +43,28 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
         ];
 
         VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+    };
 
+    $scope.randomize = function () {
+        if ($scope.selectedKey !== undefined) {
+            $scope.randomPlaylist = [];
+            var filteredKeyboard = $scope.filterKeyboard();
+            for (var count = 0; count < 7; count++) {
+                var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
+                $scope.randomPlaylist.push(randomize);
+                var temp = $scope.randomPlaylist[0].note.toLowerCase();
+                $scope.lowerCaseNotes = [];
+                $scope.lowerCaseNotes.push(temp);
+                console.log($scope.lowerCaseNotes[0]);
+                $scope.drawNotes();
+            }
+        } else {
+            Materialize.toast('Please select a key', 2000)
+        }
+    };
+
+    $scope.filterKeyboard = function() {
+        return $scope.keyboard
     };
 
     $scope.playNote = function (i) {
@@ -110,8 +101,16 @@ angular.module('MainCtrl', []).controller('MainController', function ($scope) {
 
     VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
 
+    $scope.tones = [
+        "A", "A♯/B♭", "B", "C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭"
+    ];
+    $scope.selectedKey = undefined;
 
-    // Materialize
-    $('select').material_select();
-
+    $scope.getSelectedKey = function() {
+        if ($scope.selectedKey !== undefined) {
+            return $scope.selectedKey;
+        } else {
+            return "Select a Key"
+        }
+    };
 });

@@ -1,20 +1,22 @@
 <div>
-    <p class="flow-text">Welcome to.... MELODIST</p>
-
-    <button class="waves-effect waves-light btn" ng-click="play()">Play</button>
-    <button class="waves-effect waves-light btn" ng-click="randomize()">Randomize</button>
-    <p>{{ tagline }}</p>
-
-    <br />
-    <br />
+    <h1>Melodist</h1>
 
     <div class="input-field col s12">
-        <select>
-            <option value="" disabled selected>Select a Key</option>
-            <option ng-repeat="tone in tones" value="{{tone.key}}">{{tone.value}}</option>
-        </select>
-        <label>Key</label>
+        <p class="flow-text">Select a Key</p>
+        <md-input-container>
+            <label>Key</label>
+            <md-select aria-label="wat" ng-model="selectedKey">
+                <md-option ng-repeat="tone in tones" value="{{tone}}">{{ tone }}</md-option>
+            </md-select>
+        </md-input-container>
     </div>
 
+    <br/>
+    <br/>
+
+    <button class="waves-effect waves-light btn blue" ng-click="play()"><i class="material-icons left">play_arrow</i>Play
+    </button>
+    <button class="waves-effect waves-light btn blue" ng-click="randomize()"><i class="material-icons left">album</i>Randomize
+    </button>
 
 </div>
