@@ -6,7 +6,7 @@
         <md-input-container>
             <label>Key</label>
             <md-select aria-label="wat" ng-model="selectedKey">
-                <md-option ng-repeat="tone in tones" value="{{tone}}">{{ tone }}</md-option>
+                <md-option ng-repeat="tone in tones" value="{{tone.note}}">{{ tone.noteText }}</md-option>
             </md-select>
         </md-input-container>
     </div>

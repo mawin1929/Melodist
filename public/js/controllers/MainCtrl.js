@@ -1,19 +1,25 @@
 // public/js/controllers/MainCtrl.js
 angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController', function ($scope) {
     $scope.tagline = "To the moon and back!";
+    $scope.majorIntervals = [2, 2, 1, 2, 2, 2, 1];
     VF = Vex.Flow;
 
     $scope.piano = Synth.createInstrument('piano');
-    $scope.keyboard = [
-        {note: "C", octave: 4, duration: 2},
-        {note: "D", octave: 4, duration: 2},
-        {note: "E", octave: 4, duration: 2},
-        {note: "F", octave: 4, duration: 2},
-        {note: "G", octave: 4, duration: 2},
-        {note: "A", octave: 4, duration: 2},
-        {note: "B", octave: 4, duration: 2},
-        {note: "C", octave: 5, duration: 2}
-    ];
+    $scope.keyboard = [];
+    for (var octaveNum = 4; octaveNum <= 5; octaveNum++) {
+        $scope.keyboard.push({note: "C", octave: octaveNum, duration: 2},
+            {note: "C#", octave: octaveNum, duration: 2},
+            {note: "D", octave: octaveNum, duration: 2},
+            {note: "D#", octave: octaveNum, duration: 2},
+            {note: "E", octave: octaveNum, duration: 2},
+            {note: "F", octave: octaveNum, duration: 2},
+            {note: "F#", octave: octaveNum, duration: 2},
+            {note: "G", octave: octaveNum, duration: 2},
+            {note: "G#", octave: octaveNum, duration: 2},
+            {note: "A", octave: octaveNum, duration: 2},
+            {note: "A#", octave: octaveNum, duration: 2},
+            {note: "B", octave: octaveNum, duration: 2})
+    }
 
     $scope.notesArray = [
         // new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[0]/"4"], duration: "q"}),
@@ -64,7 +70,26 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
     };
 
     $scope.filterKeyboard = function() {
-        return $scope.keyboard
+        var filteredKeyboard = [];
+        var index = 0;
+        for (var i = 0; i < $scope.keyboard.length - 1; i++) {
+            if ($scope.keyboard[i].note == $scope.selectedKey) {
+                index = i;
+                filteredKeyboard.push($scope.keyboard[index]);
+                break;
+            }
+        }
+
+        for (var i = 0; i < $scope.majorIntervals.length; i++) {
+            index += $scope.majorIntervals[i];
+            filteredKeyboard.push($scope.keyboard[index]);
+        }
+
+        for (var i = 0; i < filteredKeyboard.length; i++) {
+            console.log(filteredKeyboard[i]);
+        }
+
+        return filteredKeyboard;
     };
 
     $scope.playNote = function (i) {
@@ -102,7 +127,18 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
     VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
 
     $scope.tones = [
-        "A", "A♯/B♭", "B", "C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭"
+        {note: "A", noteText: "A"},
+        {note: "A#", noteText: "A♯/B♭"},
+        {note: "B", noteText: "B"},
+        {note: "C", noteText: "C"},
+        {note: "C#", noteText: "C♯/D♭"},
+        {note: "D", noteText: "D"},
+        {note: "D#", noteText: "D♯/E♭"},
+        {note: "E", noteText: "E"},
+        {note: "F", noteText: "F"},
+        {note: "F#", noteText: "F♯/G♭"},
+        {note: "G", noteText: "G"},
+        {note: "G#", noteText: "G♯/A♭"}
     ];
     $scope.selectedKey = undefined;
 
