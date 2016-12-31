@@ -14,7 +14,7 @@
     
     <!-- CSS -->
     <link type = "text/css" rel ="stylesheet" href="css/stylesheet.css"/>
-    
+
     <!-- JS -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="libs/materialize/bin/materialize.js"></script>
@@ -29,7 +29,10 @@
     <script src="js/appRoutes.js"></script>
     <script src="js/app.js"></script>
     <script src="js/audiosynth.js"></script>
-    
+
+    <!--VEX FLOW-->
+    <script src="https://unpkg.com/vexflow/releases/vexflow-min.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body ng-app="sampleApp" ng-controller="MainController">
@@ -37,6 +40,7 @@
 
     <!-- ANGULAR DYNAMIC CONTENT -->
     <div ng-view></div>
+    <div id = "clef"></div>
 </div>
 </body>
 </html>
