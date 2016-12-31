@@ -2,7 +2,7 @@
 angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController', function ($scope) {
 
     $scope.piano = Synth.createInstrument('piano');
-    $scope.playlist = [
+    $scope.keyboard = [
         {note: "C", octave: 4, duration: 2},
         {note: "D", octave: 4, duration: 2},
         {note: "E", octave: 4, duration: 2},
@@ -14,12 +14,21 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
     ];
 
     $scope.randomize = function () {
-        $scope.randomPlaylist = [];
-        for (var count = 0; count < 7; count++) {
-            var randomize = $scope.playlist[Math.floor($scope.playlist.length * Math.random())];
-            console.log(randomize);
-            $scope.randomPlaylist.push(randomize);
+        if ($scope.selectedKey !== undefined) {
+            $scope.randomPlaylist = [];
+            var filteredKeyboard = $scope.filterKeyboard();
+            for (var count = 0; count < 7; count++) {
+                var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
+                console.log(randomize);
+                $scope.randomPlaylist.push(randomize);
+            }
+        } else {
+            Materialize.toast('Please select a key', 2000)
         }
+    };
+
+    $scope.filterKeyboard = function() {
+
     };
 
     $scope.playNote = function (i) {
@@ -42,7 +51,6 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial']).controller('MainController'
     $scope.tones = [
         "A", "A♯/B♭", "B", "C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭"
     ];
-
     $scope.selectedKey = undefined;
 
     $scope.getSelectedKey = function() {
