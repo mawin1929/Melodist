@@ -5,7 +5,7 @@
         <p class="flow-text">Select a Key</p>
         <md-input-container>
             <label>Key</label>
-            <md-select aria-label="wat" ng-model="selectedKey">
+            <md-select aria-label="arialabel" ng-model="selectedKey">
                 <md-option ng-repeat="tone in tones" value="{{tone.note}}">{{ tone.noteText }}</md-option>
             </md-select>
         </md-input-container>
@@ -18,5 +18,8 @@
     </button>
     <button class="waves-effect waves-light btn blue" ng-click="randomize()"><i class="material-icons left">album</i>Randomize
     </button>
+
+    <div id = "clef"></div>
+    <after-render></after-render>
 
 </div>
