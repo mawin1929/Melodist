@@ -23,6 +23,16 @@
         <label>Key</label>
     </div>
 
+    <br />
+
+    <div class="input-field col s12">
+        <select ng-model="selectedScale">
+            <option value="" disabled selected>Select One</option>
+            <option ng-repeat="scale in scales" value="{{ scale.scale }}">{{ scale.scaleText }}</option>
+        </select>
+        <label>Major/Minor</label>
+    </div>
+
     <br/>
     <br/>
 
