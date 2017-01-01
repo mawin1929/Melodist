@@ -138,17 +138,25 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             $scope.stave.addClef("treble").addTimeSignature("4/4");
             // Connect it to the rendering context and draw!
             $scope.stave.setContext($scope.context).draw();
-            $scope.notesArray = [
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[0] + "/4"], duration: "q"}),
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[1] + "/4"], duration: "q"}),
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[2] + "/4"], duration: "q"}),
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[3] + "/4"], duration: "q"}),
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[4] + "/4"], duration: "q"}),
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[5] + "/4"], duration: "q"}),
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[6] + "/4"], duration: "q"}),
-                new $scope.VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[7] + "/4"], duration: "q"})
+            //for loop notes array. push into notes array.
+            $scope.notesArray = [];
+            for (var count = 0; count < 8; count++) {
+                if($scope.lowerCaseNotes[count].length > 1){
+                    $scope.notesArray.push(new $scope.VF.StaveNote({
+                        clef: "treble",
+                        keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],
+                        duration: "q"
+                    }).addAccidental(0, new $scope.VF.Accidental("#")));
+                }
+                else {
+                    $scope.notesArray.push(new $scope.VF.StaveNote({
+                        clef: "treble",
+                        keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],
+                        duration: "q"
+                    }));
+                }
 
-            ];
+            }
             $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
         };
     }).directive('afterRender', function ($timeout) {
