@@ -7,7 +7,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
     })
 
     .controller('MainController', function ($scope, constants) {
-        $scope.tagline = "To the moon and back!";
+        $scope.tagline = "To the moon and back!"; // lol 
 
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
@@ -79,16 +79,37 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.playNote = function (i) {
             $scope.piano.play(i.note, i.octave, i.duration);
         };
+        $scope.stopBool = 0;
 
-        var speed = 500;
+        $scope.stop=function(){
+            $scope.stopBool = 1;
+
+            Synth.setVolume(0);
+            console.log("stopBool is true, music should stop now")
+        };
+
+
         $scope.play = function () {
             var totalDelay = 0, i = 0;
+            $scope.stopBool = 0;
+            Synth.setVolume(1);
             for (var key in $scope.randomPlaylist) {
-                setTimeout(function () {
-                    $scope.playNote($scope.randomPlaylist[i]);
-                    i++;
-                }, totalDelay);
-                totalDelay += $scope.randomPlaylist[key].duration * speed;
+                if($scope.stopBool == 0) {
+                    console.log($scope.stopBool);
+                    setTimeout(function () {
+                        $scope.playNote($scope.randomPlaylist[i]);
+                        i++;
+                    }, totalDelay);
+                    $scope.speed = 500;
+                    $scope.speed = $scope.speed/(Math.ceil(Math.random() * 2));
+                    console.log($scope.speed);
+                    totalDelay += $scope.randomPlaylist[key].duration * $scope.speed;
+
+                }
+                else{
+
+                }
+
             }
         };
 
@@ -118,14 +139,14 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.VF = Vex.Flow;
         $scope.notesArray = [
             // new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[0]/"4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["e/4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["f/4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["a/4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "q"}),
-            new $scope.VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "q"}),
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q"}),
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["e/4"], duration: "q"}),
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["f/4"], duration: "q"}),
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "q"}),
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["a/4"], duration: "q"}),
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "q"}),
+            // new $scope.VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
         ];
 
         $scope.drawNotes = function () {
