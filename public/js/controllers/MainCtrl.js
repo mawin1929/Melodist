@@ -2,9 +2,10 @@
 angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
     .constant("constants", {
-        "intervals": {"ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1],
-        "penMa" : [2,2,3,2]},
-        "noteLengths": [1],
+        "intervals": {
+            "ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1],
+            "penMa": [2, 2, 3, 2]
+        },
         "defaultDuration": 1,
         "bpmConversion": 60000,
         "bpmConversionPlay": 10,
@@ -17,6 +18,9 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.bpm = 60;
         $scope.minBPM = constants.minBPM;
         $scope.maxBPM = constants.maxBPM;
+        $scope.quarterOn = true;
+        $scope.eighthOn = true;
+        $scope.sixteenthOn = true;
 
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
@@ -36,27 +40,43 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         }
 
         $scope.randomize = function () {
-            if ($scope.currentTimer == undefined) {
-                if ($scope.selectedKey == undefined) {
-                    Materialize.toast('Please select a key', 2000);
-                } else if ($scope.selectedScale == undefined) {
-                    Materialize.toast('Please select a scale', 2000)
-                } else {
-                    $scope.randomPlaylist = [];
-                    var filteredKeyboard = $scope.filterKeyboard();
-                    $scope.lowerCaseNotes = [];
-                    for (var count = 0; count < 8; count++) {
-                        var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
-                        randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
-                        $scope.randomPlaylist.push(randomize);
-                        var temp = $scope.randomPlaylist[count].note.toLowerCase();
-                        $scope.lowerCaseNotes.push(temp);
-                    }
-                    $scope.drawNotes();
-                }
-            } else {
-                Materialize.toast('Stop the current track before randomizing', 2000);
+            if ($scope.currentTimer != undefined) {
+                $scope.stop();
             }
+
+            if ($scope.selectedKey == undefined) {
+                Materialize.toast('Please select a key', 2000);
+            } else if ($scope.selectedScale == undefined) {
+                Materialize.toast('Please select a scale', 2000)
+            } else {
+                $scope.randomPlaylist = [];
+                var filteredKeyboard = $scope.filterKeyboard();
+                $scope.lowerCaseNotes = [];
+                for (var count = 0; count < 8; count++) {
+                    var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
+                    var noteLengths = $scope.getNoteLengths();
+                    randomize.duration = noteLengths[Math.floor(noteLengths.length * Math.random())];
+                    $scope.randomPlaylist.push(randomize);
+                    var temp = $scope.randomPlaylist[count].note.toLowerCase();
+                    $scope.lowerCaseNotes.push(temp);
+                }
+                $scope.drawNotes();
+            }
+
+        };
+
+        $scope.getNoteLengths = function() {
+            var noteLengths = [];
+            if ($scope.quarterOn) {
+                noteLengths.push(1);
+            }
+            if ($scope.eighthOn) {
+                noteLengths.push(.5);
+            }
+            if ($scope.sixteenthOn) {
+                noteLengths.push(.25);
+            }
+            return noteLengths;
         };
 
         $scope.filterKeyboard = function () {
@@ -106,7 +126,6 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     $scope.currentTimer = setTimeout(function () {
                         $scope.playNote($scope.randomPlaylist[index]);
                         $scope.recursivePlay(index + 1);
-                        console.log("note play");
                     }, $scope.randomPlaylist[index - 1].duration * (constants.bpmConversion / $scope.bpm));
                 } else {
                     $scope.playNote($scope.randomPlaylist[index]);
@@ -156,7 +175,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             // new $scope.VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
         ];
 
-        $scope.newBar = function(x){
+        $scope.newBar = function (x) {
             $scope.context = $scope.renderer.getContext();
             $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
             // Create a stave of width 400 at position 10, 40 on the canvas.
@@ -182,18 +201,18 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
             var amountOfNotes = 8; //this variable can change
             for (var count = 0; count < (amountOfNotes + 1); count++) {
-             if (count == 4) {
-                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
-                 $scope.notesArray = [];
-             }
-             else if (count != 4 && count != 0 && count%4 ==0 ){
-                 $scope.newBar(pushBar);
-                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
-             }
-             else if (count == amountOfNotes && count !=4){
+                if (count == 4) {
+                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+                    $scope.notesArray = [];
+                }
+                else if (count != 4 && count != 0 && count % 4 == 0) {
+                    $scope.newBar(pushBar);
+                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+                }
+                else if (count == amountOfNotes && count != 4) {
 
-             }
-                if($scope.lowerCaseNotes[count].length > 1){
+                }
+                if ($scope.lowerCaseNotes[count].length > 1) {
                     $scope.notesArray.push(new $scope.VF.StaveNote({
                         clef: "treble",
                         keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],

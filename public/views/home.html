@@ -31,10 +31,42 @@
                     <input class=""type="range" id="bpm_range" ng-model="bpm" min="{{ minBPM }}" max="{{ maxBPM }}"/>
                 </p>
             </div>
+            <div class="col s2">
+                <label class="center-align">Quarter Notes</label>
+                <div class="switch">
+                    <label>
+                        Off
+                        <input ng-model="quarterOn" type="checkbox">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+            <div class="col s2">
+                <label>Eighth Notes</label>
+                <div class="switch">
+                    <label>
+                        Off
+                        <input ng-model="eighthOn" type="checkbox">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+            <div class="col s2">
+                <label>Sixteenth Notes</label>
+                <div class="switch">
+                    <label>
+                        Off
+                        <input ng-model="sixteenthOn" checked type="checkbox">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
 
-    <br/>
     <br/>
 
     <button class="waves-effect waves-light btn blue" ng-click="play()"><i class="material-icons left">play_arrow</i>Play
