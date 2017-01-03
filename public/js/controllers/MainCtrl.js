@@ -10,7 +10,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         "bpmConversion": 60000,
         "bpmConversionPlay": 10,
         "minBPM": 36,
-        "maxBPM": 256
+        "maxBPM": 256,
+        "noteCount": 8
     })
 
     .controller('MainController', function ($scope, constants) {
@@ -52,7 +53,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.randomPlaylist = [];
                 var filteredKeyboard = $scope.filterKeyboard();
                 $scope.lowerCaseNotes = [];
-                for (var count = 0; count < 8; count++) {
+                for (var count = 0; count < constants.noteCount; count++) {
                     var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
                     var noteLengths = $scope.getNoteLengths();
                     randomize.duration = noteLengths[Math.floor(noteLengths.length * Math.random())];
