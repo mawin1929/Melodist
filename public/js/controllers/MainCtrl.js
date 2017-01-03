@@ -36,22 +36,26 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         }
 
         $scope.randomize = function () {
-            if ($scope.selectedKey == undefined) {
-                Materialize.toast('Please select a key', 2000);
-            } else if ($scope.selectedScale == undefined) {
-                Materialize.toast('Please select a scale', 2000)
-            } else {
-                $scope.randomPlaylist = [];
-                var filteredKeyboard = $scope.filterKeyboard();
-                $scope.lowerCaseNotes = [];
-                for (var count = 0; count < 8; count++) {
-                    var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
-                    randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
-                    $scope.randomPlaylist.push(randomize);
-                    var temp = $scope.randomPlaylist[count].note.toLowerCase();
-                    $scope.lowerCaseNotes.push(temp);
+            if ($scope.currentTimer == undefined) {
+                if ($scope.selectedKey == undefined) {
+                    Materialize.toast('Please select a key', 2000);
+                } else if ($scope.selectedScale == undefined) {
+                    Materialize.toast('Please select a scale', 2000)
+                } else {
+                    $scope.randomPlaylist = [];
+                    var filteredKeyboard = $scope.filterKeyboard();
+                    $scope.lowerCaseNotes = [];
+                    for (var count = 0; count < 8; count++) {
+                        var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
+                        randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
+                        $scope.randomPlaylist.push(randomize);
+                        var temp = $scope.randomPlaylist[count].note.toLowerCase();
+                        $scope.lowerCaseNotes.push(temp);
+                    }
+                    $scope.drawNotes();
                 }
-                $scope.drawNotes();
+            } else {
+                Materialize.toast('Stop the current track before randomizing', 2000);
             }
         };
 
