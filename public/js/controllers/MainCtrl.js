@@ -7,7 +7,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
     })
 
     .controller('MainController', function ($scope, constants) {
-        $scope.tagline = "To the moon and back!"; // lol 
+        $scope.tagline = "To the moon and back!"; // lol
+        $scope.allNotes= [[]];
 
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
@@ -149,19 +150,42 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             // new $scope.VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
         ];
 
+        $scope.newBar = function(x){
+            $scope.context = $scope.renderer.getContext();
+            $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
+            // Create a stave of width 400 at position 10, 40 on the canvas.
+            $scope.stave = new $scope.VF.Stave(x, 40, 435);
+            // Add a clef and time signature.
+            // Connect it to the rendering context and draw!
+            $scope.stave.setContext($scope.context).draw();
+            //for loop notes array. push into notes array.
+        };
         $scope.drawNotes = function () {
             $scope.context.clear();
             $scope.context = $scope.renderer.getContext();
             $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
             // Create a stave of width 400 at position 10, 40 on the canvas.
-            $scope.stave = new $scope.VF.Stave(10, 40, 800);
+            $scope.stave = new $scope.VF.Stave(10, 40, 435);
             // Add a clef and time signature.
             $scope.stave.addClef("treble").addTimeSignature("4/4");
             // Connect it to the rendering context and draw!
             $scope.stave.setContext($scope.context).draw();
-            //for loop notes array. push into notes array.
+            var pushBar = 445;
+            // $scope.newBar(pushBar);
             $scope.notesArray = [];
-            for (var count = 0; count < 8; count++) {
+            var amountOfNotes = 8; //this variable can change
+            for (var count = 0; count < (amountOfNotes + 1); count++) {
+             if (count == 4) {
+                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+                 $scope.notesArray = [];
+             }
+             else if (count != 4 && count != 0 && count%4 ==0 ){
+                 $scope.newBar(pushBar);
+                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+             }
+             else if (count == amountOfNotes && count !=4){
+
+             }
                 if($scope.lowerCaseNotes[count].length > 1){
                     $scope.notesArray.push(new $scope.VF.StaveNote({
                         clef: "treble",
@@ -178,7 +202,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 }
 
             }
-            $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+
         };
     }).directive('afterRender', function ($timeout) {
     return {
@@ -192,7 +216,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.context = $scope.renderer.getContext();
                 $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
                 // Create a stave of width 400 at position 10, 40 on the canvas.
-                $scope.stave = new $scope.VF.Stave(10, 40, 800);
+                $scope.stave = new $scope.VF.Stave(10, 40, 435);
                 // Add a clef and time signature.
                 $scope.stave.addClef("treble").addTimeSignature("4/4");
                 // Connect it to the rendering context and draw!
@@ -204,4 +228,3 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         }
     }
 });
-;
