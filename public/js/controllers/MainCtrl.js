@@ -2,9 +2,9 @@
 angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
     .constant("constants", {
-        "majorIntervals": [2, 2, 1, 2, 2, 2, 1],
-        "minorIntervals": [2, 1, 2, 2, 1, 2, 2],
-        "quarterNoteLength": 1
+        "intervals": {"ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1]},
+        "noteLengths": [.5, 1, 2],
+        "defaultDuration": 1
     })
 
     .controller('MainController', function ($scope, constants) {
@@ -14,18 +14,18 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
         for (var octaveNum = 4; octaveNum <= 5; octaveNum++) {
-            $scope.keyboard.push({note: "C", octave: octaveNum, duration: 1},
-                {note: "C#", octave: octaveNum, duration: 1},
-                {note: "D", octave: octaveNum, duration: 1},
-                {note: "D#", octave: octaveNum, duration: 1},
-                {note: "E", octave: octaveNum, duration: 1},
-                {note: "F", octave: octaveNum, duration: 1},
-                {note: "F#", octave: octaveNum, duration: 1},
-                {note: "G", octave: octaveNum, duration: 1},
-                {note: "G#", octave: octaveNum, duration: 1},
-                {note: "A", octave: octaveNum, duration: 1},
-                {note: "A#", octave: octaveNum, duration: 1},
-                {note: "B", octave: octaveNum, duration: 1})
+            $scope.keyboard.push({note: "C", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "C#", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "D", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "D#", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "E", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "F", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "F#", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "G", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "G#", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "A", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "A#", octave: octaveNum, duration: constants.defaultDuration},
+                {note: "B", octave: octaveNum, duration: constants.defaultDuration})
         }
 
         $scope.randomize = function () {
@@ -39,6 +39,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.lowerCaseNotes = [];
                 for (var count = 0; count < 8; count++) {
                     var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
+                    randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
                     $scope.randomPlaylist.push(randomize);
                     var temp = $scope.randomPlaylist[count].note.toLowerCase();
                     $scope.lowerCaseNotes.push(temp);
@@ -60,13 +61,10 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             }
 
             var intervals = undefined;
-            if ($scope.selectedScale == "Ma") {
-                intervals = constants.majorIntervals;
-            } else {
-                intervals = constants.minorIntervals;
-            }
 
-            for (var i = 0; i < intervals.length; i++) {
+            intervals = constants.intervals[$scope.selectedScale];
+
+            for (i = 0; i < intervals.length; i++) {
                 index += intervals[i];
                 filteredKeyboard.push($scope.keyboard[index]);
             }
@@ -98,7 +96,6 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             if (index < $scope.randomPlaylist.length) {
                 if (index != 0) {
                     $scope.currentTimer = setTimeout(function () {
-                        console.log($scope.randomPlaylist[index - 1].duration * $scope.speed);
                         $scope.playNote($scope.randomPlaylist[index]);
                         $scope.recursivePlay(index + 1);
                     }, $scope.randomPlaylist[index - 1].duration * $scope.speed);
@@ -129,8 +126,9 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.selectedKey = undefined;
 
         $scope.scales = [
-            {scale: "Ma", scaleText: "Major"},
-            {scale: "Mi", scaleText: "Minor"}
+            {scale: "ma", scaleText: "Major"},
+            {scale: "natMi", scaleText: "Natural Minor"},
+            {scale: "harmMi", scaleText: "Harmonic Minor"}
         ];
         $scope.selectedScale = undefined;
 
