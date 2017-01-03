@@ -3,27 +3,29 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
     .constant("constants", {
         "majorIntervals": [2, 2, 1, 2, 2, 2, 1],
-        "minorIntervals": [2, 1, 2, 2, 1, 2, 2]
+        "minorIntervals": [2, 1, 2, 2, 1, 2, 2],
+        "quarterNoteLength": 1
     })
 
     .controller('MainController', function ($scope, constants) {
-        $scope.tagline = "To the moon and back!"; // lol 
+        $scope.tagline = "To the moon and back!"; // lol
+        $scope.speed = 500;
 
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
         for (var octaveNum = 4; octaveNum <= 5; octaveNum++) {
-            $scope.keyboard.push({note: "C", octave: octaveNum, duration: 2},
-                {note: "C#", octave: octaveNum, duration: 2},
-                {note: "D", octave: octaveNum, duration: 2},
-                {note: "D#", octave: octaveNum, duration: 2},
-                {note: "E", octave: octaveNum, duration: 2},
-                {note: "F", octave: octaveNum, duration: 2},
-                {note: "F#", octave: octaveNum, duration: 2},
-                {note: "G", octave: octaveNum, duration: 2},
-                {note: "G#", octave: octaveNum, duration: 2},
-                {note: "A", octave: octaveNum, duration: 2},
-                {note: "A#", octave: octaveNum, duration: 2},
-                {note: "B", octave: octaveNum, duration: 2})
+            $scope.keyboard.push({note: "C", octave: octaveNum, duration: 1},
+                {note: "C#", octave: octaveNum, duration: 1},
+                {note: "D", octave: octaveNum, duration: 1},
+                {note: "D#", octave: octaveNum, duration: 1},
+                {note: "E", octave: octaveNum, duration: 1},
+                {note: "F", octave: octaveNum, duration: 1},
+                {note: "F#", octave: octaveNum, duration: 1},
+                {note: "G", octave: octaveNum, duration: 1},
+                {note: "G#", octave: octaveNum, duration: 1},
+                {note: "A", octave: octaveNum, duration: 1},
+                {note: "A#", octave: octaveNum, duration: 1},
+                {note: "B", octave: octaveNum, duration: 1})
         }
 
         $scope.randomize = function () {
@@ -69,47 +71,44 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 filteredKeyboard.push($scope.keyboard[index]);
             }
 
-            for (var i = 0; i < filteredKeyboard.length; i++) {
-                console.log(filteredKeyboard[i]);
-            }
-
             return filteredKeyboard;
         };
 
         $scope.playNote = function (i) {
             $scope.piano.play(i.note, i.octave, i.duration);
         };
-        $scope.stopBool = 0;
 
-        $scope.stop=function(){
-            $scope.stopBool = 1;
-
-            Synth.setVolume(0);
-            console.log("stopBool is true, music should stop now")
+        $scope.stop = function () {
+            if ($scope.currentTimer != undefined) {
+                clearTimeout($scope.currentTimer);
+                $scope.currentTimer = undefined;
+            }
         };
 
-
         $scope.play = function () {
-            var totalDelay = 0, i = 0;
-            $scope.stopBool = 0;
-            Synth.setVolume(1);
-            for (var key in $scope.randomPlaylist) {
-                if($scope.stopBool == 0) {
-                    console.log($scope.stopBool);
-                    setTimeout(function () {
-                        $scope.playNote($scope.randomPlaylist[i]);
-                        i++;
-                    }, totalDelay);
-                    $scope.speed = 500;
-                    $scope.speed = $scope.speed/(Math.ceil(Math.random() * 2));
-                    console.log($scope.speed);
-                    totalDelay += $scope.randomPlaylist[key].duration * $scope.speed;
+            if ($scope.randomPlaylist != undefined) {
+                $scope.stop();
+                $scope.recursivePlay(0);
+            } else {
+                Materialize.toast('Please generate notes by clicking randomize', 2500)
+            }
+        };
 
+        $scope.recursivePlay = function (index) {
+            if (index < $scope.randomPlaylist.length) {
+                if (index != 0) {
+                    $scope.currentTimer = setTimeout(function () {
+                        console.log($scope.randomPlaylist[index - 1].duration * $scope.speed);
+                        $scope.playNote($scope.randomPlaylist[index]);
+                        $scope.recursivePlay(index + 1);
+                    }, $scope.randomPlaylist[index - 1].duration * $scope.speed);
+                } else {
+                    $scope.playNote($scope.randomPlaylist[index]);
+                    $scope.recursivePlay(index + 1);
                 }
-                else{
-
-                }
-
+            } else {
+                $scope.currentTimer = undefined;
+                console.log("End playing");
             }
         };
 
@@ -162,7 +161,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             //for loop notes array. push into notes array.
             $scope.notesArray = [];
             for (var count = 0; count < 8; count++) {
-                if($scope.lowerCaseNotes[count].length > 1){
+                if ($scope.lowerCaseNotes[count].length > 1) {
                     $scope.notesArray.push(new $scope.VF.StaveNote({
                         clef: "treble",
                         keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],
@@ -204,4 +203,3 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         }
     }
 });
-;
