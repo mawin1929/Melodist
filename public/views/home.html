@@ -11,7 +11,7 @@
         <label>Key</label>
     </div>
 
-    <br />
+    <br/>
 
     <div class="input-field col s12">
         <select ng-model="selectedScale">
@@ -19,6 +19,19 @@
             <option ng-repeat="scale in scales" value="{{ scale.scale }}">{{ scale.scaleText }}</option>
         </select>
         <label>Major/Minor</label>
+    </div>
+
+    <br />
+
+    <div class="col s12">
+        <div class="row">
+            <div class="col s6">
+                <label>BPM: {{ bpm }}</label>
+                <p class="range-field">
+                    <input class=""type="range" id="bpm_range" ng-model="bpm" min="{{ minBPM }}" max="{{ maxBPM }}"/>
+                </p>
+            </div>
+        </div>
     </div>
 
     <br/>
@@ -31,7 +44,7 @@
     <button class="waves-effect waves-light btn blue" ng-click="randomize()"><i class="material-icons left">album</i>Randomize
     </button>
 
-    <div id = "clef"></div>
+    <div id="clef"></div>
     <after-render></after-render>
 
 </div>

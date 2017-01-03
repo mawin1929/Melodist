@@ -2,14 +2,21 @@
 angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
     .constant("constants", {
-        "intervals": {"ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1]},
-        "noteLengths": [.5, 1, 2],
-        "defaultDuration": 1
+        "intervals": {"ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1],
+        "penMa" : [2,2,3,2]},
+        "noteLengths": [1],
+        "defaultDuration": 1,
+        "bpmConversion": 60000,
+        "bpmConversionPlay": 10,
+        "minBPM": 36,
+        "maxBPM": 256
     })
 
     .controller('MainController', function ($scope, constants) {
         $scope.tagline = "To the moon and back!"; // lol
-        $scope.speed = 500;
+        $scope.bpm = 60;
+        $scope.minBPM = constants.minBPM;
+        $scope.maxBPM = constants.maxBPM;
 
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
@@ -43,7 +50,6 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     $scope.randomPlaylist.push(randomize);
                     var temp = $scope.randomPlaylist[count].note.toLowerCase();
                     $scope.lowerCaseNotes.push(temp);
-
                 }
                 $scope.drawNotes();
             }
@@ -60,9 +66,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 }
             }
 
-            var intervals = undefined;
-
-            intervals = constants.intervals[$scope.selectedScale];
+            var intervals = constants.intervals[$scope.selectedScale];
 
             for (i = 0; i < intervals.length; i++) {
                 index += intervals[i];
@@ -73,7 +77,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         };
 
         $scope.playNote = function (i) {
-            $scope.piano.play(i.note, i.octave, i.duration);
+            $scope.piano.play(i.note, i.octave, i.duration * constants.bpm * constants.bpmConversion);
         };
 
         $scope.stop = function () {
@@ -98,7 +102,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     $scope.currentTimer = setTimeout(function () {
                         $scope.playNote($scope.randomPlaylist[index]);
                         $scope.recursivePlay(index + 1);
-                    }, $scope.randomPlaylist[index - 1].duration * $scope.speed);
+                        console.log("note play");
+                    }, $scope.randomPlaylist[index - 1].duration * (constants.bpmConversion / $scope.bpm));
                 } else {
                     $scope.playNote($scope.randomPlaylist[index]);
                     $scope.recursivePlay(index + 1);
@@ -127,6 +132,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
         $scope.scales = [
             {scale: "ma", scaleText: "Major"},
+            {scale: "penMa", scaleText: "Pentatonic Major"},
             {scale: "natMi", scaleText: "Natural Minor"},
             {scale: "harmMi", scaleText: "Harmonic Minor"}
         ];
