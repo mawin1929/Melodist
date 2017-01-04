@@ -2,19 +2,22 @@
 angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
     .constant("constants", {
-        "intervals": {"ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1],
-        "penMa" : [2,2,3,2]},
-        "noteLengths": [1],
+        "intervals": {
+            "ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1],
+            "penMa": [2, 2, 3, 2]
+        },
+        "noteLengths": [1, 0.5, .25],
         "defaultDuration": 1,
         "bpmConversion": 60000,
         "bpmConversionPlay": 10,
         "minBPM": 36,
-        "maxBPM": 256
+        "maxBPM": 256,
+        "defaultBPM": 80
     })
 
     .controller('MainController', function ($scope, constants) {
         $scope.tagline = "To the moon and back!"; // lol
-        $scope.bpm = 60;
+        $scope.bpm = constants.defaultBPM;
         $scope.minBPM = constants.minBPM;
         $scope.maxBPM = constants.maxBPM;
 
@@ -47,13 +50,18 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 for (var count = 0; count < 8; count++) {
                     var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
                     randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
+
+
                     $scope.randomPlaylist.push(randomize);
                     var temp = $scope.randomPlaylist[count].note.toLowerCase();
                     $scope.lowerCaseNotes.push(temp);
                 }
+
                 $scope.drawNotes();
             }
         };
+
+
 
         $scope.filterKeyboard = function () {
             var filteredKeyboard = [];
@@ -152,7 +160,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             // new $scope.VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
         ];
 
-        $scope.newBar = function(x){
+        $scope.newBar = function (x) {
             $scope.context = $scope.renderer.getContext();
             $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
             // Create a stave of width 400 at position 10, 40 on the canvas.
@@ -162,6 +170,24 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             $scope.stave.setContext($scope.context).draw();
             //for loop notes array. push into notes array.
         };
+
+        $scope.convertToText = function () {
+            $scope.textDuration = [];
+            for (var count = 0; count < 8; count++) {
+                switch ($scope.randomPlaylist[count].duration) {
+                    case 1:
+                        $scope.textDuration[count] = "q";
+                        break;
+                    case .5:
+                        $scope.textDuration[count] = "8";
+                        break;
+                    case .25:
+                        $scope.textDuration[count] = "16";
+                        break;
+                }
+            }
+        };
+
         $scope.drawNotes = function () {
             $scope.context.clear();
             $scope.context = $scope.renderer.getContext();
@@ -175,32 +201,34 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             var pushBar = 445;
             // $scope.newBar(pushBar);
             $scope.notesArray = [];
+            $scope.convertToText(); // convert 1 to quarter note, .5 to represent 8th note, and .25 to represent 16th
+            // note
 
             var amountOfNotes = 8; //this variable can change
             for (var count = 0; count < (amountOfNotes + 1); count++) {
-             if (count == 4) {
-                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
-                 $scope.notesArray = [];
-             }
-             else if (count != 4 && count != 0 && count%4 ==0 ){
-                 $scope.newBar(pushBar);
-                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
-             }
-             else if (count == amountOfNotes && count !=4){
+                if (count == 4) {
+                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+                    $scope.notesArray = [];
+                }
+                else if (count != 4 && count != 0 && count % 4 == 0) {
+                    $scope.newBar(pushBar);
+                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+                }
+                else if (count == amountOfNotes && count != 4) {
 
-             }
-                if($scope.lowerCaseNotes[count].length > 1){
+                }
+                if ($scope.lowerCaseNotes[count].length > 1) {
                     $scope.notesArray.push(new $scope.VF.StaveNote({
                         clef: "treble",
                         keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],
-                        duration: "q"
+                        duration: $scope.textDuration[count]
                     }).addAccidental(0, new $scope.VF.Accidental("#")));
                 }
                 else {
                     $scope.notesArray.push(new $scope.VF.StaveNote({
                         clef: "treble",
                         keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],
-                        duration: "q"
+                        duration: $scope.textDuration[count]
                     }));
                 }
 
