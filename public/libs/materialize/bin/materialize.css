@@ -6483,11 +6483,11 @@ form p:last-child {
 }
 
 .switch label input[type=checkbox]:checked + .lever {
-  background-color: #84c7c1;
+  background-color: #64B5F6;
 }
 
 .switch label input[type=checkbox]:checked + .lever:after {
-  background-color: #26a69a;
+  background-color: #2196F3;
   left: 24px;
 }
 

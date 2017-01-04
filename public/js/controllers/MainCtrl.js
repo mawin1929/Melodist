@@ -12,7 +12,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         "bpmConversionPlay": 10,
         "minBPM": 36,
         "maxBPM": 256,
-        "defaultBPM": 80
+        "defaultBPM": 80,
+        "noteCount": 8
     })
 
     .controller('MainController', function ($scope, constants) {
@@ -20,6 +21,9 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.bpm = constants.defaultBPM;
         $scope.minBPM = constants.minBPM;
         $scope.maxBPM = constants.maxBPM;
+        $scope.quarterOn = true;
+        $scope.eighthOn = true;
+        $scope.sixteenthOn = true;
 
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
@@ -39,6 +43,10 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         }
 
         $scope.randomize = function () {
+            if ($scope.currentTimer != undefined) {
+                $scope.stop();
+            }
+
             if ($scope.selectedKey == undefined) {
                 Materialize.toast('Please select a key', 2000);
             } else if ($scope.selectedScale == undefined) {
@@ -47,11 +55,11 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.randomPlaylist = [];
                 var filteredKeyboard = $scope.filterKeyboard();
                 $scope.lowerCaseNotes = [];
-                for (var count = 0; count < 8; count++) {
+                for (var count = 0; count < constants.noteCount; count++) {
                     var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
                     randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
-
-
+                    var noteLengths = $scope.getNoteLengths();
+                    randomize.duration = noteLengths[Math.floor(noteLengths.length * Math.random())];
                     $scope.randomPlaylist.push(randomize);
                     var temp = $scope.randomPlaylist[count].note.toLowerCase();
                     $scope.lowerCaseNotes.push(temp);
@@ -59,6 +67,21 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
                 $scope.drawNotes();
             }
+
+        };
+
+        $scope.getNoteLengths = function() {
+            var noteLengths = [];
+            if ($scope.quarterOn) {
+                noteLengths.push(1);
+            }
+            if ($scope.eighthOn) {
+                noteLengths.push(.5);
+            }
+            if ($scope.sixteenthOn) {
+                noteLengths.push(.25);
+            }
+            return noteLengths;
         };
 
 
@@ -110,7 +133,6 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     $scope.currentTimer = setTimeout(function () {
                         $scope.playNote($scope.randomPlaylist[index]);
                         $scope.recursivePlay(index + 1);
-                        console.log("note play");
                     }, $scope.randomPlaylist[index - 1].duration * (constants.bpmConversion / $scope.bpm));
                 } else {
                     $scope.playNote($scope.randomPlaylist[index]);
