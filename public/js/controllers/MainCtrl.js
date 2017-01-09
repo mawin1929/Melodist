@@ -6,14 +6,14 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             "ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1],
             "penMa": [2, 2, 3, 2]
         },
-        "noteLengths": [1, 0.5, .25],
         "defaultDuration": 1,
         "bpmConversion": 60000,
         "bpmConversionPlay": 10,
         "minBPM": 36,
         "maxBPM": 256,
         "defaultBPM": 80,
-        "noteCount": 8
+        "noteCount": 8,
+        "measures": 2
     })
 
     .controller('MainController', function ($scope, constants) {
@@ -55,6 +55,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.randomPlaylist = [];
                 var filteredKeyboard = $scope.filterKeyboard();
                 $scope.lowerCaseNotes = [];
+
+                /*
                 for (var count = 0; count < constants.noteCount; count++) {
                     var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
                     randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
@@ -64,6 +66,28 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     var temp = $scope.randomPlaylist[count].note.toLowerCase();
                     $scope.lowerCaseNotes.push(temp);
                 }
+                */
+
+                for (var measureNum = 0; measureNum < constants.measures; measureNum++) {
+                    var count = 0;
+                    var variableNoteLengths = $scope.getNoteLengths();
+                    var qOut = !constants.quarterOn;
+                    var eighthOut = !constants.eighthOn;
+                    while (count < 4) {
+                        var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
+                        if (count > 3 && !qOut) {
+                            variableNoteLengths.pop();
+                        }
+                        if (count > 3.5 && !eighthOut) {
+                            variableNoteLengths.pop();
+                        }
+                        randomize.duration = variableNoteLengths[Math.floor(variableNoteLengths.length * Math.random())];
+                        count += randomize.duration;
+                        console.log(count);
+                        $scope.randomPlaylist.push(randomize);
+                        $scope.lowerCaseNotes.push(randomize.note.toLowerCase());
+                    }
+                }
 
                 $scope.drawNotes();
             }
@@ -72,19 +96,17 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
         $scope.getNoteLengths = function() {
             var noteLengths = [];
-            if ($scope.quarterOn) {
-                noteLengths.push(1);
+            if ($scope.sixteenthOn) {
+                noteLengths.push(.25);
             }
             if ($scope.eighthOn) {
                 noteLengths.push(.5);
             }
-            if ($scope.sixteenthOn) {
-                noteLengths.push(.25);
+            if ($scope.quarterOn) {
+                noteLengths.push(1);
             }
             return noteLengths;
         };
-
-
 
         $scope.filterKeyboard = function () {
             var filteredKeyboard = [];
@@ -170,17 +192,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
         // VexFlow
         $scope.VF = Vex.Flow;
-        $scope.notesArray = [
-            // new VF.StaveNote({clef: "treble", keys: [$scope.lowerCaseNotes[0]/"4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["e/4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["f/4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["g/4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["a/4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "q"}),
-            // new $scope.VF.StaveNote({clef: "treble", keys: ["c/5"], duration: "q"})
-        ];
+        $scope.notesArray = [];
 
         $scope.newBar = function (x) {
             $scope.context = $scope.renderer.getContext();
@@ -225,9 +237,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             $scope.notesArray = [];
             $scope.convertToText(); // convert 1 to quarter note, .5 to represent 8th note, and .25 to represent 16th
             // note
-
-            var amountOfNotes = 8; //this variable can change
-            for (var count = 0; count < (amountOfNotes + 1); count++) {
+            
+            for (var count = 0; count < (constants.noteCount + 1); count++) {
                 if (count == 4) {
                     $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
                     $scope.notesArray = [];
@@ -236,7 +247,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     $scope.newBar(pushBar);
                     $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
                 }
-                else if (count == amountOfNotes && count != 4) {
+                else if (count == constants.noteCount && count != 4) {
 
                 }
                 if ($scope.lowerCaseNotes[count].length > 1) {
