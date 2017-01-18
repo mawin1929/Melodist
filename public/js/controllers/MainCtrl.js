@@ -71,21 +71,24 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 for (var measureNum = 0; measureNum < constants.measures; measureNum++) {
                     var count = 0;
                     var variableNoteLengths = $scope.getNoteLengths();
-                    var qOut = !constants.quarterOn;
-                    var eighthOut = !constants.eighthOn;
+                    var qOut = constants.quarterOn;
+                    var eighthOut = constants.eighthOn;
                     while (count < 4) {
                         var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
                         if (count > 3 && !qOut) {
                             variableNoteLengths.pop();
+                            qOut = true;
                         }
                         if (count > 3.5 && !eighthOut) {
                             variableNoteLengths.pop();
+                            eighthOut = true;
                         }
                         randomize.duration = variableNoteLengths[Math.floor(variableNoteLengths.length * Math.random())];
                         count += randomize.duration;
-                        console.log(count);
                         $scope.randomPlaylist.push(randomize);
-                        $scope.lowerCaseNotes.push(randomize.note.toLowerCase());
+                        var lowercase = randomize;
+                        lowercase.note = lowercase.note.toLowerCase();
+                        $scope.lowerCaseNotes.push(lowercase);
                     }
                 }
 
@@ -205,21 +208,16 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             //for loop notes array. push into notes array.
         };
 
-        $scope.convertToText = function () {
-            $scope.textDuration = [];
-            for (var count = 0; count < 8; count++) {
-                switch ($scope.randomPlaylist[count].duration) {
-                    case 1:
-                        $scope.textDuration[count] = "q";
-                        break;
-                    case .5:
-                        $scope.textDuration[count] = "8";
-                        break;
-                    case .25:
-                        $scope.textDuration[count] = "16";
-                        break;
-                }
+        $scope.convertToText = function (length) {
+            switch (length) {
+                case 1:
+                    return "q";
+                case .5:
+                    return "8";
+                case .25:
+                    return "16";
             }
+            return "q";
         };
 
         $scope.drawNotes = function () {
@@ -235,9 +233,32 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             var pushBar = 445;
             // $scope.newBar(pushBar);
             $scope.notesArray = [];
-            $scope.convertToText(); // convert 1 to quarter note, .5 to represent 8th note, and .25 to represent 16th
-            // note
-            
+
+            var count = 0;
+            for (var lowerCaseNote in $scope.lowerCaseNotes) {
+                var lcn = $scope.lowerCaseNotes[lowerCaseNote];
+                if (lcn.note.length > 1) {
+                    $scope.notesArray.push(new $scope.VF.StaveNote({
+                        clef: "treble",
+                        keys: [lcn.note + "/" + lcn.octave],
+                        duration: $scope.convertToText(lcn.duration)
+                    }).addAccidental(0, new $scope.VF.Accidental("#")));
+                } else {
+                    $scope.notesArray.push(new $scope.VF.StaveNote({
+                        clef: "treble",
+                        keys: [lcn.note + "/" + lcn.octave],
+                        duration: $scope.convertToText(lcn.duration)
+                    }));
+                }
+                count += lcn.duration;
+                if (count >= 4) {
+                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+                    $scope.notesArray = [];
+                    count = 0;
+                }
+            }
+
+            /*
             for (var count = 0; count < (constants.noteCount + 1); count++) {
                 if (count == 4) {
                     $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
@@ -264,8 +285,9 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                         duration: $scope.textDuration[count]
                     }));
                 }
-
             }
+            */
+
 
         };
     }).directive('afterRender', function ($timeout) {
