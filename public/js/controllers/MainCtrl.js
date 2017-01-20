@@ -86,8 +86,11 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                         randomize.duration = variableNoteLengths[Math.floor(variableNoteLengths.length * Math.random())];
                         count += randomize.duration;
                         $scope.randomPlaylist.push(randomize);
-                        var lowercase = randomize;
-                        lowercase.note = lowercase.note.toLowerCase();
+                        var lowercase = {
+                            note: randomize.note.toLowerCase(),
+                            octave: randomize.octave,
+                            duration: randomize.duration
+                        };
                         $scope.lowerCaseNotes.push(lowercase);
                     }
                 }
