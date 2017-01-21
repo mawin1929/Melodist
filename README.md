@@ -12,6 +12,6 @@ Random Melody Generator for different scales with music notation and audio rende
 ## Authors
 
 * **Timothy Lam** - [Github](https://github.com/thl024)
-* **Michael Win** 
+* **Michael Win** - [Github](https://github.com/mawin1929)
 
 
