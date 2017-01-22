@@ -256,8 +256,13 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 count += lcn.duration;
                 if (count >= 4) {
                     $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
+                    var beams = $scope.VF.Beam.generateBeams($scope.notesArray);
+                    beams.forEach(function(beam) {
+                        beam.setContext($scope.context).draw();
+                    });
                     $scope.notesArray = [];
                     count = 0;
+                    $scope.newBar(pushBar);
                 }
             }
 
