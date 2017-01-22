@@ -13,7 +13,10 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         "maxBPM": 256,
         "defaultBPM": 80,
         "noteCount": 8,
-        "measures": 2
+        "measures": 2,
+        "defaultMeasures": 2,
+        "minMeasures": 1,
+        "maxMeasures": 10
     })
 
     .controller('MainController', function ($scope, constants) {
@@ -21,9 +24,12 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.bpm = constants.defaultBPM;
         $scope.minBPM = constants.minBPM;
         $scope.maxBPM = constants.maxBPM;
+        $scope.minMeasureCount = constants.minMeasures;
+        $scope.maxMeasureCount = constants.maxMeasures;
         $scope.quarterOn = true;
         $scope.eighthOn = true;
         $scope.sixteenthOn = true;
+        $scope.measureCount = constants.defaultMeasures;
 
         $scope.piano = Synth.createInstrument('piano');
         $scope.keyboard = [];
@@ -68,7 +74,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 }
                 */
 
-                for (var measureNum = 0; measureNum < constants.measures; measureNum++) {
+                for (var measureNum = 0; measureNum < $scope.measureCount; measureNum++) {
                     var count = 0;
                     var variableNoteLengths = $scope.getNoteLengths();
                     var qOut = constants.quarterOn;

@@ -1,34 +1,33 @@
 <div>
     <h1>Melodist</h1>
-
-    <!---<br />-->
-
-    <div class="input-field col s12">
-        <select ng-model="selectedKey">
-            <option value="" disabled selected>Select a Key</option>
-            <option ng-repeat="tone in tones" value="{{ tone.note }}">{{ tone.noteText }}</option>
-        </select>
-        <label>Key</label>
-    </div>
-
     <br/>
 
-    <div class="input-field col s12">
-        <select ng-model="selectedScale">
-            <option value="" disabled selected>Select One</option>
-            <option ng-repeat="scale in scales" value="{{ scale.scale }}">{{ scale.scaleText }}</option>
-        </select>
-        <label>Scale</label>
+    <div class="s12">
+        <div class="row">
+            <div class="input-field col s12 m6">
+                <select ng-model="selectedKey">
+                    <option value="" disabled selected>Select a Key</option>
+                    <option ng-repeat="tone in tones" value="{{ tone.note }}">{{ tone.noteText }}</option>
+                </select>
+                <label>Key</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <select ng-model="selectedScale">
+                    <option value="" disabled selected>Select One</option>
+                    <option ng-repeat="scale in scales" value="{{ scale.scale }}">{{ scale.scaleText }}</option>
+                </select>
+                <label>Scale</label>
+            </div>
+        </div>
     </div>
-
-    <br />
 
     <div class="col s12">
         <div class="row">
             <div class="col s6">
                 <label>BPM: {{ bpm }}</label>
                 <p class="range-field">
-                    <input class=""type="range" id="bpm_range" ng-model="bpm" min="{{ minBPM }}" max="{{ maxBPM }}"/>
+                    <input class="" type="range" id="bpm_range" ng-model="bpm" min="{{ minBPM }}"
+                           max="{{ maxBPM }}"/>
                 </p>
             </div>
             <div class="col s2">
@@ -63,6 +62,18 @@
                         On
                     </label>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12">
+        <div class="row">
+            <div class="col s6">
+                <label>Measures: {{ measureCount }}</label>
+                <p class="range-field">
+                    <input class="" type="range" id="measure_range" ng-model="measureCount" min="{{ minMeasureCount }}"
+                           max="{{ maxMeasureCount }}"/>
+                </p>
             </div>
         </div>
     </div>
