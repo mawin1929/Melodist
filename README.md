@@ -1,4 +1,4 @@
-# Meldoist
+# Melodist
 
 Random Melody Generator for different scales with music notation and audio rendering.
 
