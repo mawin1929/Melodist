@@ -207,11 +207,11 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.VF = Vex.Flow;
         $scope.notesArray = [];
 
-        $scope.newBar = function (x) {
+        $scope.newBar = function (x,y) {
             $scope.context = $scope.renderer.getContext();
             $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
-            // Create a stave of width 400 at position 10, 40 on the canvas.
-            $scope.stave = new $scope.VF.Stave(x, 40, 435);
+            // Create a stave of width 435 at position 10, 40 on the canvas.
+            $scope.stave = new $scope.VF.Stave(x, y, 435);
             // Add a clef and time signature.
             // Connect it to the rendering context and draw!
             $scope.stave.setContext($scope.context).draw();
@@ -240,7 +240,9 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             $scope.stave.addClef("treble").addTimeSignature("4/4");
             // Connect it to the rendering context and draw!
             $scope.stave.setContext($scope.context).draw();
-            var pushBar = 445;
+            $scope.pushBar = 0;
+            $scope.newLine = 0;
+            $scope.nextLine = 0;
             // $scope.newBar(pushBar);
             $scope.notesArray = [];
 
@@ -261,16 +263,32 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     }));
                 }
                 count += lcn.duration;
+                console.log(count);
+
                 if (count >= 4) {
                     var beams = $scope.VF.Beam.generateBeams($scope.notesArray);
                     $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
                     beams.forEach(function(beam) {
                         beam.setContext($scope.context).draw();
                     });
+                    $scope.newLine +=1;
                     $scope.notesArray = [];
                     count = 0;
-                    $scope.newBar(pushBar);
+                    $scope.pushBar += 445;
+                    console.log($scope.nextLine);
+                    $scope.nextLine += 40;
+                    if ($scope.newLine ==2){
+                        $scope.newLine =0;
+                        $scope.nextLine += 100;
+        
+                        console.log("hellllo " + $scope.nextLine);
 
+                    }
+                    else{
+
+                    }
+                    // $scope.renderer.resize(1800,400);
+                    $scope.newBar($scope.pushBar, $scope.nextLine);
 
                 }
             }
