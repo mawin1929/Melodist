@@ -262,14 +262,16 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 }
                 count += lcn.duration;
                 if (count >= 4) {
-                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
                     var beams = $scope.VF.Beam.generateBeams($scope.notesArray);
+                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
                     beams.forEach(function(beam) {
                         beam.setContext($scope.context).draw();
                     });
                     $scope.notesArray = [];
                     count = 0;
                     $scope.newBar(pushBar);
+
+
                 }
             }
 
@@ -322,6 +324,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.stave.addClef("treble").addTimeSignature("4/4");
                 // Connect it to the rendering context and draw!
                 $scope.stave.setContext($scope.context).draw();
+
                 $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
 
                 $('select').material_select();
