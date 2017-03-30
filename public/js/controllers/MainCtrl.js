@@ -30,8 +30,17 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.eighthOn = true;
         $scope.sixteenthOn = true;
         $scope.measureCount = constants.defaultMeasures;
+        $scope.delay = 0;
+        $scope.velocity = 200;
 
-        $scope.piano = Synth.createInstrument('piano');
+        MIDI.loadPlugin({
+            soundfontUrl: "assets/soundfont/",
+            instrument: "acoustic_grand_piano",
+            onsuccess: function() {
+                MIDI.setVolume(0, 127);
+            }
+        });
+
         $scope.keyboard = [];
         for (var octaveNum = 4; octaveNum <= 5; octaveNum++) {
             $scope.keyboard.push({note: "C", octave: octaveNum, duration: constants.defaultDuration},
@@ -62,18 +71,6 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 var filteredKeyboard = $scope.filterKeyboard();
                 $scope.lowerCaseNotes = [];
 
-                /*
-                for (var count = 0; count < constants.noteCount; count++) {
-                    var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
-                    randomize.duration = constants.noteLengths[Math.floor(constants.noteLengths.length * Math.random())];
-                    var noteLengths = $scope.getNoteLengths();
-                    randomize.duration = noteLengths[Math.floor(noteLengths.length * Math.random())];
-                    $scope.randomPlaylist.push(randomize);
-                    var temp = $scope.randomPlaylist[count].note.toLowerCase();
-                    $scope.lowerCaseNotes.push(temp);
-                }
-                */
-
                 for (var measureNum = 0; measureNum < $scope.measureCount; measureNum++) {
                     var count = 0;
                     var variableNoteLengths = $scope.getNoteLengths();
@@ -91,8 +88,12 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                         }
                         randomize.duration = variableNoteLengths[Math.floor(variableNoteLengths.length * Math.random())];
                         count += randomize.duration;
-                        var noteCopy = JSON.parse(JSON.stringify(randomize));
-                        $scope.randomPlaylist.push(noteCopy);
+                        var playNote = {
+                            note: $scope.convertToMIDINote(randomize.note),
+                            octave: randomize.octave,
+                            duration: randomize.duration
+                        };
+                        $scope.randomPlaylist.push(playNote);
                         var lowercase = {
                             note: randomize.note.toLowerCase(),
                             octave: randomize.octave,
@@ -143,7 +144,9 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         };
 
         $scope.playNote = function (i) {
-            $scope.piano.play(i.note, i.octave, i.duration * constants.bpm * constants.bpmConversion);
+            var midiNote = MIDI.keyToNote[i.note + i.octave];
+            MIDI.noteOn(0, midiNote, $scope.velocity, $scope.delay);
+            MIDI.noteOff(0, midiNote, $scope.delay + i.duration - 0.15);
         };
 
         $scope.stop = function () {
@@ -177,6 +180,10 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.currentTimer = undefined;
                 console.log("End playing");
             }
+        };
+
+        $scope.exportMidi = function () {
+
         };
 
         $scope.tones = [
@@ -228,6 +235,17 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     return "16";
             }
             return "q";
+        };
+
+        $scope.convertToMIDINote = function(originalNote) {
+            switch (originalNote) {
+                case "A#": return "Bb";
+                case "C#": return "Db";
+                case "D#": return "Eb";
+                case "F#": return "Gb";
+                case "G#": return "Ab";
+                default: return originalNote;
+            }
         };
 
         $scope.drawNotes = function () {
