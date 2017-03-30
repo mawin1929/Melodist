@@ -77,17 +77,17 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 for (var measureNum = 0; measureNum < $scope.measureCount; measureNum++) {
                     var count = 0;
                     var variableNoteLengths = $scope.getNoteLengths();
-                    var qOut = constants.quarterOn;
-                    var eighthOut = constants.eighthOn;
+                    var qOut = $scope.quarterOn;
+                    var eighthOut = $scope.eighthOn;
                     while (count < 4) {
                         var randomize = filteredKeyboard[Math.floor(filteredKeyboard.length * Math.random())];
-                        if (count > 3 && !qOut) {
+                        if (count > 3 && qOut) {
                             variableNoteLengths.pop();
-                            qOut = true;
+                            qOut = false;
                         }
-                        if (count > 3.5 && !eighthOut) {
+                        if (count > 3.5 && eighthOut) {
                             variableNoteLengths.pop();
-                            eighthOut = true;
+                            eighthOut = false;
                         }
                         randomize.duration = variableNoteLengths[Math.floor(variableNoteLengths.length * Math.random())];
                         count += randomize.duration;
