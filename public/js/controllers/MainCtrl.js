@@ -49,6 +49,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         }
 
         $scope.randomize = function () {
+            $scope.renderer.resize(900, $scope.canvasSize);
             if ($scope.currentTimer != undefined) {
                 $scope.stop();
             }
@@ -289,14 +290,14 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                         $scope.nextLine += 105;
                         $scope.pushBar = 10;
                         console.log("hellllo " + $scope.nextLine);
-                        $scope.canvasSize +=100;
-                        $scope.renderer.resize(900, $scope.canvasSize);
+                       $scope.canvasSize +=200;
+
                     }
                     else{
 
                     }
-                    // $scope.renderer.resize(1800,400);
                     $scope.newBar($scope.pushBar, $scope.nextLine);
+                    console.log($scope.canvasSize);
 
                 }
             }
@@ -341,7 +342,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 //Vexflow (clef visualization)
                 var div = document.getElementById("clef");
                 $scope.renderer = new $scope.VF.Renderer(div, $scope.VF.Renderer.Backends.SVG);
-                $scope.renderer.resize(900, 200); //size
+                $scope.renderer.resize(900, $scope.canvasSize); //size
                 $scope.context = $scope.renderer.getContext();
                 $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
                 // Create a stave of width 400 at position 10, 40 on the canvas.
