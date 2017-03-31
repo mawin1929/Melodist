@@ -47,9 +47,29 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 {note: "A#", octave: octaveNum, duration: constants.defaultDuration},
                 {note: "B", octave: octaveNum, duration: constants.defaultDuration})
         }
+        $scope.canvasResize = function(){
+            if($scope.measureCount <= 2){
+                $scope.canvasSize = 178;
+            }
+            else {
+                if($scope.measureCount % 2 == 1) {
+                    $scope.tempCount = $scope.measureCount + 1;
+                }
+                else{
+                    $scope.tempCount = $scope.measureCount;
+
+                }
+                $scope.canvasSize = ($scope.tempCount * 63.75);
+            }
+            $scope.renderer.resize(900, $scope.canvasSize);
+            console.log("Canvas size is" + $scope.canvasSize);
+        };
 
         $scope.randomize = function () {
-            $scope.renderer.resize(900, $scope.canvasSize);
+
+            $scope.canvasResize();
+
+
             if ($scope.currentTimer != undefined) {
                 $scope.stop();
             }
@@ -247,7 +267,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             // $scope.newBar(pushBar);
             $scope.notesArray = [];
             $scope.firstCase = 0;
-            $scope.canvasSize = 200;
+
             var count = 0;
             for (var lowerCaseNote in $scope.lowerCaseNotes) {
                 var lcn = $scope.lowerCaseNotes[lowerCaseNote];
@@ -265,7 +285,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     }));
                 }
                 count += lcn.duration;
-                console.log(count);
+              //  console.log(count);
 
                 if (count >= 4) {
                     var beams = $scope.VF.Beam.generateBeams($scope.notesArray);
@@ -276,6 +296,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     $scope.newLine +=1;
                     $scope.notesArray = [];
                     count = 0;
+
+                    //For the first bar only
                     if ($scope.firstCase ==0){
                         $scope.pushBar = 445;
                         $scope.firstCase = 1;
@@ -284,20 +306,23 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                         $scope.pushBar += 435;
                     }
 
+
+
                    // $scope.nextLine = 40; //first one
+       //             console.log("Measure count" + $scope.measureCount);
                     if ($scope.newLine ==2){
                         $scope.newLine =0;
                         $scope.nextLine += 105;
                         $scope.pushBar = 10;
-                        console.log("hellllo " + $scope.nextLine);
-                       $scope.canvasSize +=200;
+        //                console.log("hellllo " + $scope.nextLine);
+                    //   $scope.canvasSize +=200;
 
                     }
                     else{
 
                     }
                     $scope.newBar($scope.pushBar, $scope.nextLine);
-                    console.log($scope.canvasSize);
+                 //   console.log($scope.canvasSize);
 
                 }
             }
@@ -342,7 +367,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 //Vexflow (clef visualization)
                 var div = document.getElementById("clef");
                 $scope.renderer = new $scope.VF.Renderer(div, $scope.VF.Renderer.Backends.SVG);
-                $scope.renderer.resize(900, $scope.canvasSize); //size
+                $scope.renderer.resize(900, 178); //size
                 $scope.context = $scope.renderer.getContext();
                 $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
                 // Create a stave of width 400 at position 10, 40 on the canvas.
