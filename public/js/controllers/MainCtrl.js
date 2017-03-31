@@ -11,7 +11,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         "bpmConversionPlay": 10,
         "minBPM": 36,
         "maxBPM": 256,
-        "defaultBPM": 80,
+        "defaultBPM": 100,
         "noteCount": 8,
         "measures": 2,
         "defaultMeasures": 2,
@@ -28,7 +28,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
         $scope.maxMeasureCount = constants.maxMeasures;
         $scope.quarterOn = true;
         $scope.eighthOn = true;
-        $scope.sixteenthOn = true;
+        $scope.sixteenthOn = false;
         $scope.measureCount = constants.defaultMeasures;
 
         $scope.piano = Synth.createInstrument('piano');
@@ -242,10 +242,11 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             $scope.stave.setContext($scope.context).draw();
             $scope.pushBar = 0;
             $scope.newLine = 0;
-            $scope.nextLine = 0;
+            $scope.nextLine = 40;
             // $scope.newBar(pushBar);
             $scope.notesArray = [];
-
+            $scope.firstCase = 0;
+            $scope.canvasSize = 200;
             var count = 0;
             for (var lowerCaseNote in $scope.lowerCaseNotes) {
                 var lcn = $scope.lowerCaseNotes[lowerCaseNote];
@@ -274,15 +275,22 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     $scope.newLine +=1;
                     $scope.notesArray = [];
                     count = 0;
-                    $scope.pushBar += 445;
-                    console.log($scope.nextLine);
-                    $scope.nextLine += 40;
+                    if ($scope.firstCase ==0){
+                        $scope.pushBar = 445;
+                        $scope.firstCase = 1;
+                    }
+                    else{
+                        $scope.pushBar += 435;
+                    }
+
+                   // $scope.nextLine = 40; //first one
                     if ($scope.newLine ==2){
                         $scope.newLine =0;
-                        $scope.nextLine += 100;
-        
+                        $scope.nextLine += 105;
+                        $scope.pushBar = 10;
                         console.log("hellllo " + $scope.nextLine);
-
+                        $scope.canvasSize +=100;
+                        $scope.renderer.resize(900, $scope.canvasSize);
                     }
                     else{
 
