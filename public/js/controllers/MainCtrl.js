@@ -1,6 +1,7 @@
 // public/js/controllers/MainCtrl.js
 angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
+
     .constant("constants", {
         "intervals": {
             "ma": [2, 2, 1, 2, 2, 2, 1], "natMi": [2, 1, 2, 2, 1, 2, 2], "harmMi": [2, 1, 2, 2, 1, 3, 1],
@@ -21,18 +22,48 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
     .controller('MainController', function ($scope, constants) {
         $scope.tagline = "To the moon and back!"; // lol
+
+        //Text for the drop down menus
+        $scope.tones = [
+            {note: "A", noteText: "A"},
+            {note: "A#", noteText: "A♯/B♭"},
+            {note: "B", noteText: "B"},
+            {note: "C", noteText: "C"},
+            {note: "C#", noteText: "C♯/D♭"},
+            {note: "D", noteText: "D"},
+            {note: "D#", noteText: "D♯/E♭"},
+            {note: "E", noteText: "E"},
+            {note: "F", noteText: "F"},
+            {note: "F#", noteText: "F♯/G♭"},
+            {note: "G", noteText: "G"},
+            {note: "G#", noteText: "G♯/A♭"}
+        ];
+        $scope.scales = [
+            {scale: "ma", scaleText: "Major"},
+            {scale: "penMa", scaleText: "Pentatonic Major"},
+            {scale: "natMi", scaleText: "Natural Minor"},
+            {scale: "harmMi", scaleText: "Harmonic Minor"}
+        ];
+
+
+        //For the html sliders
         $scope.bpm = constants.defaultBPM;
         $scope.minBPM = constants.minBPM;
         $scope.maxBPM = constants.maxBPM;
         $scope.minMeasureCount = constants.minMeasures;
         $scope.maxMeasureCount = constants.maxMeasures;
+
+        //Toggles type of note ex. quarter note, eigth note
         $scope.quarterOn = true;
         $scope.eighthOn = true;
         $scope.sixteenthOn = false;
+
+        //How many measures will be created
         $scope.measureCount = constants.defaultMeasures;
         $scope.delay = 0;
         $scope.velocity = 200;
 
+        //Load in midi.js
         MIDI.loadPlugin({
             soundfontUrl: "assets/soundfont/",
             instrument: "acoustic_grand_piano",
@@ -41,9 +72,11 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             }
         });
 
+        //Array with all possible notes on a keyboard
         $scope.keyboard = [];
         for (var octaveNum = 4; octaveNum <= 5; octaveNum++) {
-            $scope.keyboard.push({note: "C", octave: octaveNum, duration: constants.defaultDuration},
+            $scope.keyboard.push(
+                {note: "C", octave: octaveNum, duration: constants.defaultDuration},
                 {note: "C#", octave: octaveNum, duration: constants.defaultDuration},
                 {note: "D", octave: octaveNum, duration: constants.defaultDuration},
                 {note: "D#", octave: octaveNum, duration: constants.defaultDuration},
@@ -56,6 +89,8 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 {note: "A#", octave: octaveNum, duration: constants.defaultDuration},
                 {note: "B", octave: octaveNum, duration: constants.defaultDuration})
         }
+
+        //Automatic resize function for the Sheet Music (resize depends on amount of measures)
         $scope.canvasResize = function(){
             if($scope.measureCount <= 2){
                 $scope.canvasSize = 178;
@@ -66,19 +101,16 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 }
                 else{
                     $scope.tempCount = $scope.measureCount;
-
                 }
-                $scope.canvasSize = ($scope.tempCount * 63.75);
+                $scope.canvasSize = ($scope.tempCount * 61.75);
             }
             $scope.renderer.resize(900, $scope.canvasSize);
             console.log("Canvas size is" + $scope.canvasSize);
         };
 
+        //Randomizes notes, puts them in a new array
         $scope.randomize = function () {
-
             $scope.canvasResize();
-
-
             if ($scope.currentTimer != undefined) {
                 $scope.stop();
             }
@@ -91,7 +123,6 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 $scope.randomPlaylist = [];
                 var filteredKeyboard = $scope.filterKeyboard();
                 $scope.lowerCaseNotes = [];
-
                 for (var measureNum = 0; measureNum < $scope.measureCount; measureNum++) {
                     var count = 0;
                     var variableNoteLengths = $scope.getNoteLengths();
@@ -128,7 +159,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             }
 
         };
-
+        //Have to translate note lengths into numbers for the API's
         $scope.getNoteLengths = function() {
             var noteLengths = [];
             if ($scope.sixteenthOn) {
@@ -143,6 +174,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             return noteLengths;
         };
 
+
         $scope.filterKeyboard = function () {
             var filteredKeyboard = [];
             var index = 0;
@@ -153,14 +185,11 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                     break;
                 }
             }
-
             var intervals = constants.intervals[$scope.selectedScale];
-
             for (i = 0; i < intervals.length; i++) {
                 index += intervals[i];
                 filteredKeyboard.push($scope.keyboard[index]);
             }
-
             return filteredKeyboard;
         };
 
@@ -207,38 +236,19 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
 
         };
 
-        $scope.tones = [
-            {note: "A", noteText: "A"},
-            {note: "A#", noteText: "A♯/B♭"},
-            {note: "B", noteText: "B"},
-            {note: "C", noteText: "C"},
-            {note: "C#", noteText: "C♯/D♭"},
-            {note: "D", noteText: "D"},
-            {note: "D#", noteText: "D♯/E♭"},
-            {note: "E", noteText: "E"},
-            {note: "F", noteText: "F"},
-            {note: "F#", noteText: "F♯/G♭"},
-            {note: "G", noteText: "G"},
-            {note: "G#", noteText: "G♯/A♭"}
-        ];
-        $scope.selectedKey = undefined;
 
-        $scope.scales = [
-            {scale: "ma", scaleText: "Major"},
-            {scale: "penMa", scaleText: "Pentatonic Major"},
-            {scale: "natMi", scaleText: "Natural Minor"},
-            {scale: "harmMi", scaleText: "Harmonic Minor"}
-        ];
+        $scope.selectedKey = undefined;
         $scope.selectedScale = undefined;
 
         // VexFlow
         $scope.VF = Vex.Flow;
         $scope.notesArray = [];
 
+        //Used to determine where to add new measures
         $scope.newBar = function (x,y) {
             $scope.context = $scope.renderer.getContext();
             $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
-            // Create a stave of width 435 at position 10, 40 on the canvas.
+            // Create a stave of width 435 at position x, y on the canvas.
             $scope.stave = new $scope.VF.Stave(x, y, 435);
             // Add a clef and time signature.
             // Connect it to the rendering context and draw!
@@ -246,6 +256,7 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
             //for loop notes array. push into notes array.
         };
 
+        //Translating note lengths so that VexFlow can read them
         $scope.convertToText = function (length) {
             switch (length) {
                 case 1:
@@ -324,20 +335,10 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                         $scope.pushBar += 435;
                     }
 
-
-
-                   // $scope.nextLine = 40; //first one
-       //             console.log("Measure count" + $scope.measureCount);
                     if ($scope.newLine ==2){
                         $scope.newLine =0;
                         $scope.nextLine += 105;
                         $scope.pushBar = 10;
-        //                console.log("hellllo " + $scope.nextLine);
-                    //   $scope.canvasSize +=200;
-
-                    }
-                    else{
-
                     }
                     $scope.newBar($scope.pushBar, $scope.nextLine);
                  //   console.log($scope.canvasSize);
@@ -345,50 +346,21 @@ angular.module('MainCtrl', ['ngAria', 'ngMaterial'])
                 }
             }
 
-            /*
-            for (var count = 0; count < (constants.noteCount + 1); count++) {
-                if (count == 4) {
-                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
-                    $scope.notesArray = [];
-                }
-                else if (count != 4 && count != 0 && count % 4 == 0) {
-                    $scope.newBar(pushBar);
-                    $scope.VF.Formatter.FormatAndDraw($scope.context, $scope.stave, $scope.notesArray);
-                }
-                else if (count == constants.noteCount && count != 4) {
-
-                }
-                if ($scope.lowerCaseNotes[count].length > 1) {
-                    $scope.notesArray.push(new $scope.VF.StaveNote({
-                        clef: "treble",
-                        keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],
-                        duration: $scope.textDuration[count]
-                    }).addAccidental(0, new $scope.VF.Accidental("#")));
-                }
-                else {
-                    $scope.notesArray.push(new $scope.VF.StaveNote({
-                        clef: "treble",
-                        keys: [$scope.lowerCaseNotes[count] + "/" + $scope.randomPlaylist[count].octave],
-                        duration: $scope.textDuration[count]
-                    }));
-                }
-            }
-            */
-
-
         };
     }).directive('afterRender', function ($timeout) {
     return {
         link: function ($scope, element, attr) {
             $timeout(function () {
+                Materialize.toast('Select a key and scale, then press randomize', 3500);
 
                 //Vexflow (clef visualization)
+
                 var div = document.getElementById("clef");
                 $scope.renderer = new $scope.VF.Renderer(div, $scope.VF.Renderer.Backends.SVG);
                 $scope.renderer.resize(900, 178); //size
                 $scope.context = $scope.renderer.getContext();
                 $scope.context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed"); //font and bg-fill
-                // Create a stave of width 400 at position 10, 40 on the canvas.
+                // Create a stave of width 435 at position 10, 40 on the canvas.
                 $scope.stave = new $scope.VF.Stave(10, 40, 435);
                 // Add a clef and time signature.
                 $scope.stave.addClef("treble").addTimeSignature("4/4");
