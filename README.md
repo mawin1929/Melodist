@@ -5,7 +5,7 @@ Random Melody Generator for different scales with music notation and audio rende
 ## Built With
 
 * [Materialize](http://materializecss.com/) - The web framework used
-* [Audiosynth](https://github.com/keithwhor/audiosynth) - For audio
+* [MIDI-js](https://galactic.ink/midi-js/) - For audio
 * [Vexflow](http://www.vexflow.com/) - For music notation
 
 
